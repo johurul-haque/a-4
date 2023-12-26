@@ -36,7 +36,44 @@ const userModelSchema = new Schema<User>(
 userModelSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, env.SALT_ROUNDS);
 
+  await PasswordModel.create({
+    user: this._id,
+    password: this.password,
+    createdAt: new Date(),
+  });
+
+  next();
+});
+
+const passwordModelSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+});
+
+passwordModelSchema.pre('save', async function (next) {
+  const docs = await PasswordModel.find({ user: this._id }).sort({
+    createdAt: -1,
+  });
+
+  const docsToDelete = docs.slice(2);
+
+  for (const doc of docsToDelete) {
+    await PasswordModel.findByIdAndDelete(doc._id);
+  }
+
   next();
 });
 
 export const UserModel = model('user', userModelSchema);
+export const PasswordModel = model('password', passwordModelSchema);

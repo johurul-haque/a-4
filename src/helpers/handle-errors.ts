@@ -3,13 +3,13 @@ import { AppError } from '@utils';
 import mongoose from 'mongoose';
 import { ZodError } from 'zod';
 
-export function appError(error: AppError): ErrorResponse {
+export function appError(error: AppError): ErrorResponse | any {
   return {
     status: error.status,
     message: error.name,
     errorMessage: error.message,
-    errorDetails: error,
-    stack: error.stack,
+    errorDetails: null,
+    stack: null,
   };
 }
 
