@@ -1,3 +1,4 @@
+import { env } from '@config';
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import { User, userRoles } from './user.interface';
@@ -33,7 +34,7 @@ const userModelSchema = new Schema<User>(
 );
 
 userModelSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, env.SALT_ROUNDS);
 
   next();
 });

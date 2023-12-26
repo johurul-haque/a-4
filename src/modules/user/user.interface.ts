@@ -14,4 +14,16 @@ export const userLoginSchema = userSchema.pick({
   password: true,
 });
 
+export const passwordChangeSchema = z.object({
+  currentPassword: z.string(),
+  newPassword: z.string(),
+});
+
 export type User = z.infer<typeof userSchema>;
+export type PasswordChangePayload = z.infer<typeof passwordChangeSchema>;
+
+export type TJwtPayload = {
+  _id: string;
+  role: (typeof userRoles)[number];
+  email: string;
+};

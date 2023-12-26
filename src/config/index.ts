@@ -8,4 +8,5 @@ export const env = cleanEnv(process.env, {
   PORT: num({ default: 8080 }),
   MONGODB_URI: str(),
   JWT_SECRET: str(),
+  SALT_ROUNDS: num({ default: 10 }),
 });

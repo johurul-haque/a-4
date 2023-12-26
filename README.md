@@ -17,23 +17,22 @@
 Create a `.env` file at the root of your project and add the following variables
 
 ```ini
-# .env
 MONGODB_URI=mongodb+srv://...
 PORT=8080 # optional
 ```
 
 ```bash
 # install dependencies
-npm install
+pnpm install
 
 # dev server
-npm run dev
+pnpm dev
 
 # build for production
-npm run build
+pnpm build
 
 # running in production
-npm run start
+pnpm run start
 ```
 
 ## App structure

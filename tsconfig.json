@@ -17,5 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "files": ["src/interface/index.d.ts"]
 }
