@@ -32,11 +32,13 @@ export const changePassword = catchAsync(async function (
   req: Request,
   res: Response
 ) {
-  const result = await userService.changePassword(req.user, req.body);
+  const result = await userService.changePassword(req.user, req.body, res);
 
-  sendResponse(res, {
-    statusCode: 200,
-    message: 'Password changed successfully',
-    data: result,
-  });
+  if (result) {
+    sendResponse(res, {
+      statusCode: 200,
+      message: 'Password changed successfully',
+      data: result,
+    });
+  }
 });

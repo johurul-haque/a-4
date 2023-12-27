@@ -62,11 +62,11 @@ const passwordModelSchema = new Schema({
 });
 
 passwordModelSchema.pre('save', async function (next) {
-  const docs = await PasswordModel.find({ user: this._id }).sort({
+  const docs = await PasswordModel.find({ user: this.user }).sort({
     createdAt: -1,
   });
 
-  const docsToDelete = docs.slice(2);
+  const docsToDelete = docs.slice(1);
 
   for (const doc of docsToDelete) {
     await PasswordModel.findByIdAndDelete(doc._id);

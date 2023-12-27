@@ -1,6 +1,7 @@
 import { Response } from 'express';
 
 type ResponseOptions<T> = {
+  success?: boolean;
   statusCode: number;
   message: string;
   meta?: {

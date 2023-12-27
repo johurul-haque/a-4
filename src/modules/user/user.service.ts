@@ -1,10 +1,12 @@
 import { env } from '@config';
-import { AppError } from '@utils';
-import { compare, hash } from 'bcrypt';
+import { AppError, sendResponse } from '@utils';
+import { compare, compareSync, hash } from 'bcrypt';
+import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { startSession } from 'mongoose';
 import { PasswordChangePayload, TJwtPayload, User } from './user.interface';
 import { PasswordModel, UserModel } from './user.model';
+import { formatDate } from './user.utils';
 
 export function register(payload: User) {
   return UserModel.create(payload);
@@ -45,9 +47,9 @@ export async function login(payload: Pick<User, 'username' | 'password'>) {
 
 export async function changePassword(
   jwtPayload: TJwtPayload,
-  payload: PasswordChangePayload
+  payload: PasswordChangePayload,
+  res: Response
 ) {
-  let success = true;
   const user = await UserModel.findOne({ _id: jwtPayload._id });
 
   if (!user)
@@ -57,22 +59,42 @@ export async function changePassword(
       'User not found with the provided ID.'
     );
 
-  const previousTwoPasswords = await PasswordModel.find({
-    user: user._id,
-  }).sort({ createdAt: -1 });
-
-  if (payload.currentPassword === payload.newPassword) {
-    success = false;
-  }
-
   const isMatched = await compare(payload.currentPassword, user.password);
 
   if (!isMatched)
     throw new AppError(
       401,
-      'AuthenticationFailed',
+      'Authentication Failed',
       "The provided password does not match the user's stored password. Please try again."
     );
+
+  const previousTwoPasswords = await PasswordModel.find({
+    user: user._id,
+  }).sort({ createdAt: -1 });
+
+  let lastUsedDate = null;
+
+  const passwordMatchesPrevious = previousTwoPasswords.some((doc) => {
+    const isMatched = compareSync(payload.newPassword, doc.password);
+
+    if (isMatched) {
+      lastUsedDate = formatDate(doc.createdAt);
+      return true;
+    }
+    return false;
+  });
+
+  if (passwordMatchesPrevious) {
+    sendResponse(res, {
+      success: false,
+      statusCode: 400,
+      message: `Password change failed. Ensure the new password is unique and not among the last 2 used (last used on ${lastUsedDate}).`,
+      data: null,
+    });
+
+    // This empty return statement is necessary to return undefined and check on the controller to not send another response
+    return;
+  }
 
   const session = await startSession();
 
@@ -87,9 +109,15 @@ export async function changePassword(
       createdAt: new Date(),
     });
 
-    const user = await UserModel.findByIdAndUpdate(jwtPayload._id, {
-      password,
-    });
+    const user = await UserModel.findByIdAndUpdate(
+      jwtPayload._id,
+      {
+        password,
+      },
+      {
+        returnOriginal: false,
+      }
+    );
 
     await session.commitTransaction();
     await session.endSession();
