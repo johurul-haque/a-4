@@ -28,6 +28,7 @@ export const courseSchema = z.object({
 
 export type Course = z.infer<typeof courseSchema> & {
   durationInWeeks: number;
+  createdBy: Types.ObjectId;
 };
 
 export type Tags = {
@@ -60,19 +61,4 @@ export type Query = {
   provider: string;
   durationInWeeks: string;
   level: (typeof courseLevels)[number];
-};
-
-export type QueryParams = {
-  limit: number;
-  skip: number;
-  sortOrder: SortTypes;
-  sortBy?: (typeof sortBy)[number];
-  minPrice?: number;
-  tags?: string;
-  startDate?: string;
-  endDate?: string;
-  language?: string;
-  provider?: string;
-  durationInWeeks?: number;
-  level?: (typeof courseLevels)[number];
 };

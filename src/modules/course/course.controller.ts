@@ -7,7 +7,8 @@ export const createCourse = catchAsync(async function (
   req: Request,
   res: Response
 ) {
-  const result = await courseServices.create(req.body);
+  const id = req.user._id;
+  const result = await courseServices.create(req.body, id);
 
   sendResponse(res, {
     statusCode: 201,
@@ -57,7 +58,7 @@ export const getCourseWithReviews = catchAsync(async function (
 
   sendResponse(res, {
     statusCode: 200,
-    message: 'Course and Reviews retrieved successfully',
+    message: 'Course with Reviews retrieved successfully',
     data: result,
   });
 });

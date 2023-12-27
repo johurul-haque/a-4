@@ -16,8 +16,14 @@ const reviewsModelSchema = new Schema<Reviews>(
       type: String,
       required: true,
     },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
   },
   {
+    timestamps: true,
     toJSON: {
       transform: (doc, { __v, ...rest }) => rest,
     },

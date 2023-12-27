@@ -7,4 +7,6 @@ export const reviewsSchema = z.object({
   review: z.string(),
 });
 
-export type Reviews = z.infer<typeof reviewsSchema>;
+export type Reviews = z.infer<typeof reviewsSchema> & {
+  createdBy: Types.ObjectId;
+};

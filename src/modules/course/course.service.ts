@@ -1,22 +1,37 @@
 import { CategoryModel } from '@modules/category/category.model';
 import { ReviewsModel } from '@modules/reviews/reviews.model';
+import { UserModel } from '@modules/user/user.model';
 import { AppError } from '@utils';
 import { Types } from 'mongoose';
 import { Course, Query, Tags } from './course.interface';
 import { CourseModel } from './course.model';
 import { getDurationInWeeks, mergeArrays, queryBuilder } from './course.utils';
 
-export async function create(payload: Course) {
-  const result = await CategoryModel.findById(payload.categoryId);
+export async function create(payload: Course, createdBy: Types.ObjectId) {
+  const category = await CategoryModel.findById(payload.categoryId);
 
-  if (!result)
+  if (!category)
     throw new AppError(
       404,
       'Not Found',
       'categoryId does not reference any existing category.'
     );
 
-  return CourseModel.create(payload);
+  const user = await UserModel.findById(createdBy);
+
+  if (!user)
+    throw new AppError(
+      404,
+      'Not Found',
+      'adminId does not reference any existing document.'
+    );
+
+  const durationInWeeks = getDurationInWeeks(
+    payload.startDate,
+    payload.endDate
+  );
+
+  return CourseModel.create({ ...payload, durationInWeeks, createdBy });
 }
 
 export async function get(query: Partial<Query>) {
@@ -24,11 +39,21 @@ export async function get(query: Partial<Query>) {
 
   const data = await CourseModel.aggregate([
     ...pipelines,
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'createdBy',
+        foreignField: '_id',
+        as: 'createdBy',
+      },
+    },
     { $skip: skip },
     { $limit: limit },
   ])
     .sort(sortBy)
     .project({ __v: 0 });
+
+  console.log(data);
 
   if (data.length) {
     data.forEach((doc: { tags: Tags }) => {
@@ -85,7 +110,10 @@ export async function update(
       {
         returnOriginal: false,
       }
-    );
+    ).populate({
+      path: 'createdBy',
+      select: '-createdAt -updatedAt',
+    });
   }
 
   return CourseModel.findOneAndUpdate(
@@ -96,15 +124,24 @@ export async function update(
     {
       returnOriginal: false,
     }
-  );
+  ).populate({
+    path: 'createdBy',
+    select: '-createdAt -updatedAt',
+  });
 }
 
 export async function getWithReviews(courseId: Types.ObjectId) {
-  const course = await CourseModel.findById(courseId);
+  const course = await CourseModel.findById(courseId).populate({
+    path: 'createdBy',
+    select: '-createdAt -updatedAt',
+  });
 
   if (!course) throw new AppError(404, 'Not Found', 'Course not found');
 
-  const reviews = await ReviewsModel.find({ courseId });
+  const reviews = await ReviewsModel.find({ courseId }).populate({
+    path: 'createdBy',
+    select: '-createdAt -updatedAt',
+  });
 
   return { course, reviews };
 }
@@ -137,7 +174,10 @@ export async function getCourseWithHighestRating() {
     courseId: result[0]._id,
   });
 
-  const course = await CourseModel.findById(result[0]._id);
+  const course = await CourseModel.findById(result[0]._id).populate({
+    path: 'createdBy',
+    select: '-createdAt -updatedAt',
+  });
 
   return {
     course,

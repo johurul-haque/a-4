@@ -1,9 +1,10 @@
 import { CourseModel } from '@modules/course/course.model';
 import { AppError } from '@utils';
+import { Types } from 'mongoose';
 import { Reviews } from './reviews.interface';
 import { ReviewsModel } from './reviews.model';
 
-export async function create(payload: Reviews) {
+export async function create(payload: Reviews, createdBy: Types.ObjectId) {
   const result = await CourseModel.findById(payload.courseId);
 
   if (!result)
@@ -13,5 +14,8 @@ export async function create(payload: Reviews) {
       'courseId does not reference any existing course.'
     );
 
-  return ReviewsModel.create(payload);
+  return (await ReviewsModel.create({ ...payload, createdBy })).populate({
+    path: 'createdBy',
+    select: '-createdAt -updatedAt',
+  });
 }

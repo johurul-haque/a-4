@@ -1,4 +1,5 @@
 import { validateRequest } from '@/middlewares/validate-request';
+import { auth } from '@middlewares/auth';
 import { Router } from 'express';
 import {
   createCourse,
@@ -11,11 +12,15 @@ import { courseSchema } from './course.interface';
 
 const router = Router();
 
-router.post('/course', validateRequest(courseSchema), createCourse);
+router.post(
+  '/course',
+  [auth('admin'), validateRequest(courseSchema)],
+  createCourse
+);
 router.get('/courses', getCourses);
 router.put(
   '/courses/:courseId',
-  validateRequest(courseSchema.deepPartial()),
+  [auth('admin'), validateRequest(courseSchema.deepPartial())],
   updateCourse
 );
 router.get('/courses/:courseId/reviews', getCourseWithReviews);

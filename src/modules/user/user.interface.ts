@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { z } from 'zod';
 
 export const userRoles = ['user', 'admin'] as const;
@@ -23,7 +24,7 @@ export type User = z.infer<typeof userSchema>;
 export type PasswordChangePayload = z.infer<typeof passwordChangeSchema>;
 
 export type TJwtPayload = {
-  _id: string;
+  _id: Types.ObjectId;
   role: (typeof userRoles)[number];
   email: string;
 };

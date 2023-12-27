@@ -4,7 +4,7 @@ import { AppError, catchAsync } from '@utils';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const auth = (role?: 'admin') => {
+export const auth = (role?: 'user' | 'admin') => {
   return catchAsync(async function (
     req: Request,
     res: Response,

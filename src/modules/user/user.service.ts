@@ -25,7 +25,7 @@ export async function login(payload: Pick<User, 'username' | 'password'>) {
   if (!isMatched)
     throw new AppError(
       401,
-      'AuthenticationFailed',
+      'Authentication Failed',
       "The provided password does not match the user's stored password. Please try again."
     );
 
