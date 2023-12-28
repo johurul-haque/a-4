@@ -1,5 +1,5 @@
 <h1 align="center">
-  A-3
+  A-4
 </h1>
 
 <p align="center">
@@ -18,8 +18,16 @@ Create a `.env` file at the root of your project and add the following variables
 
 ```ini
 MONGODB_URI=mongodb+srv://...
+JWT_SECRET=****
 PORT=8080 # optional
 ```
+To generate a **JWT secret** run the following command in your terminal
+```bash
+$ node
+$ require('crypto').randomBytes(32).toString('hex')
+```
+
+Then use the following commands for the application
 
 ```bash
 # install dependencies
@@ -46,7 +54,8 @@ pnpm run start
 │   ├── modules
 │       ├── course
 │       ├── category
-│       └── reviews
+│       ├── reviews
+│       └── user
 │   ├── interface
 │   ├── middlewares
 │   ├── utils
