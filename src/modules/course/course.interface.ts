@@ -1,31 +1,10 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { courseSchema } from './course.validation';
 
 export const courseLevels = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
 export const objectId = z.custom<Types.ObjectId>();
-
-export const courseSchema = z.object({
-  title: z.string(),
-  instructor: z.string(),
-  categoryId: objectId,
-  price: z.number(),
-  tags: z.array(
-    z.object({
-      name: z.string(),
-      isDeleted: z.boolean(),
-    })
-  ),
-  startDate: z.string(),
-  endDate: z.string(),
-  durationInWeeks: z.number().optional(),
-  language: z.string(),
-  provider: z.string(),
-  details: z.object({
-    level: z.enum(courseLevels),
-    description: z.string(),
-  }),
-});
 
 export type Course = z.infer<typeof courseSchema> & {
   createdBy: Types.ObjectId;

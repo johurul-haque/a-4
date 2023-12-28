@@ -8,7 +8,7 @@ import {
   getCourses,
   updateCourse,
 } from './course.controller';
-import { courseSchema } from './course.interface';
+import { courseSchema } from './course.validation';
 
 const router = Router();
 

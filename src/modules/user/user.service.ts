@@ -1,11 +1,12 @@
 import { env } from '@config';
+import { PasswordModel } from '@modules/password/password.model';
 import { AppError, sendResponse } from '@utils';
 import { compare, compareSync, hash } from 'bcrypt';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { startSession } from 'mongoose';
 import { PasswordChangePayload, TJwtPayload, User } from './user.interface';
-import { PasswordModel, UserModel } from './user.model';
+import { UserModel } from './user.model';
 import { formatDate } from './user.utils';
 
 export function register(payload: User) {
@@ -92,7 +93,7 @@ export async function changePassword(
       data: null,
     });
 
-    // This empty return statement is necessary to return undefined and check on the controller to not send another response
+    // This empty return statement is necessary to return undefined which will be checked on the controller side to conditionally send response
     return;
   }
 

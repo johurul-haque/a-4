@@ -6,6 +6,10 @@
  REST API for LMS <i>(Learning Management System)</i> application.
 </p>
 
+<div align="center">
+  <a href="https://documenter.getpostman.com/view/28307598/2s9YkuZyeF">View Documentation</a>
+</div>
+
 ## Tech stack
 - **TypeScript** - Static type checking
 - **Express.js** - Route handling and middleware

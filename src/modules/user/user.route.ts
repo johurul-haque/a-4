@@ -14,7 +14,7 @@ router.post('/register', validateRequest(userSchema), registerUser);
 router.post('/login', validateRequest(userLoginSchema), loginUser);
 router.post(
   '/change-password',
-  [auth('user'), validateRequest(passwordChangeSchema)],
+  [auth(), validateRequest(passwordChangeSchema)],
   changePassword
 );
 
