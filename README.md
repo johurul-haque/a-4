@@ -47,6 +47,16 @@ pnpm build
 pnpm run start
 ```
 
+### User credentials for Login
+
+#### Admin
+  - **username**: johurul
+  - **password**: @johurul_haque
+
+#### User
+  - **username**: john_doe
+  - **password**: 123456
+
 ## App structure
 
 ```bash
