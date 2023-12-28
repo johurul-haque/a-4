@@ -40,8 +40,8 @@ pnpm install
 # dev server
 pnpm dev
 
-# build for production
-pnpm build
+# build for production only using npm
+npm run build
 
 # running in production
 pnpm run start
