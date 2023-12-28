@@ -44,7 +44,7 @@ pnpm dev
 npm run build
 
 # running in production
-pnpm run start
+pnpm start
 ```
 
 ### User credentials for Login
