@@ -127,5 +127,33 @@ export function queryBuilder(query: Partial<Query>) {
     });
   }
 
+  // Populating createdBy field
+  pipelines.push({
+    $lookup: {
+      from: 'users',
+      localField: 'createdBy',
+      foreignField: '_id',
+      as: 'createdBy',
+      let: { createdBy: '$createdBy' },
+      pipeline: [
+        {
+          $match: {
+            $expr: { $eq: ['$_id', '$$createdBy'] },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            username: 1,
+            email: 1,
+            role: 1,
+          },
+        },
+      ],
+    },
+  });
+
+  pipelines.push({ $unwind: '$createdBy' });
+
   return { pipelines, ...pagination, sortBy };
 }

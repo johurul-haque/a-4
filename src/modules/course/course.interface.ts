@@ -18,6 +18,7 @@ export const courseSchema = z.object({
   ),
   startDate: z.string(),
   endDate: z.string(),
+  durationInWeeks: z.number().optional(),
   language: z.string(),
   provider: z.string(),
   details: z.object({
@@ -27,7 +28,6 @@ export const courseSchema = z.object({
 });
 
 export type Course = z.infer<typeof courseSchema> & {
-  durationInWeeks: number;
   createdBy: Types.ObjectId;
 };
 

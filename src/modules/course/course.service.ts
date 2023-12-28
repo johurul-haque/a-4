@@ -26,10 +26,13 @@ export async function create(payload: Course, createdBy: Types.ObjectId) {
       'adminId does not reference any existing document.'
     );
 
-  const durationInWeeks = getDurationInWeeks(
-    payload.startDate,
-    payload.endDate
-  );
+  let durationInWeeks = 0;
+
+  if (payload.durationInWeeks) {
+    durationInWeeks = payload.durationInWeeks;
+  } else {
+    durationInWeeks = getDurationInWeeks(payload.startDate, payload.endDate);
+  }
 
   return CourseModel.create({ ...payload, durationInWeeks, createdBy });
 }
@@ -39,21 +42,11 @@ export async function get(query: Partial<Query>) {
 
   const data = await CourseModel.aggregate([
     ...pipelines,
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'createdBy',
-        foreignField: '_id',
-        as: 'createdBy',
-      },
-    },
     { $skip: skip },
     { $limit: limit },
   ])
     .sort(sortBy)
     .project({ __v: 0 });
-
-  console.log(data);
 
   if (data.length) {
     data.forEach((doc: { tags: Tags }) => {

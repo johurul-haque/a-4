@@ -13,7 +13,7 @@ import { courseSchema } from './course.interface';
 const router = Router();
 
 router.post(
-  '/course',
+  '/courses',
   [auth('admin'), validateRequest(courseSchema)],
   createCourse
 );
