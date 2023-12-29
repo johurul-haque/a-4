@@ -73,13 +73,12 @@ export async function changePassword(
     user: user._id,
   }).sort({ createdAt: -1 });
 
-  let lastUsedDate = null;
+  let lastUsedDate = formatDate(previousTwoPasswords[0].createdAt);
 
   const passwordMatchesPrevious = previousTwoPasswords.some((doc) => {
     const isMatched = compareSync(payload.newPassword, doc.password);
 
     if (isMatched) {
-      lastUsedDate = formatDate(doc.createdAt);
       return true;
     }
     return false;
