@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
- REST API for LMS <i>(Learning Management System)</i> application.
+ REST API for Learning Management System.
 </p>
 
 <div align="center">
