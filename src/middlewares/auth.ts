@@ -1,15 +1,10 @@
 import { env } from '@config';
 import { TJwtPayload } from '@modules/user/user.interface';
 import { AppError, catchAsync } from '@utils';
-import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 export const auth = (role?: 'user' | 'admin') => {
-  return catchAsync(async function (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  return catchAsync(async function (req, res, next) {
     try {
       const token = req.headers.authorization;
 

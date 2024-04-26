@@ -1,22 +1,19 @@
 import { catchAsync, sendResponse } from '@utils';
-import { Request, Response } from 'express';
 import * as categoryService from './category.service';
 
-export const createCategory = catchAsync(
-  async (req: Request, res: Response) => {
-    const data = req.body,
-      id = req.user._id,
-      result = await categoryService.create(data, id);
+export const createCategory = catchAsync(async (req, res) => {
+  const data = req.body,
+    id = req.user._id,
+    result = await categoryService.create(data, id);
 
-    sendResponse(res, {
-      statusCode: 201,
-      message: 'Category created successfully',
-      data: result,
-    });
-  }
-);
+  sendResponse(res, {
+    statusCode: 201,
+    message: 'Category created successfully',
+    data: result,
+  });
+});
 
-export const getCategories = catchAsync(async (req: Request, res: Response) => {
+export const getCategories = catchAsync(async (req, res) => {
   const result = await categoryService.get();
 
   sendResponse(res, {

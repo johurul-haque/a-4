@@ -1,11 +1,7 @@
 import { catchAsync, sendResponse } from '@utils';
-import { Request, Response } from 'express';
 import * as userService from './user.service';
 
-export const registerUser = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const registerUser = catchAsync(async function (req, res) {
   const result = await userService.register(req.body);
 
   sendResponse(res, {
@@ -15,10 +11,7 @@ export const registerUser = catchAsync(async function (
   });
 });
 
-export const loginUser = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const loginUser = catchAsync(async function (req, res) {
   const result = await userService.login(req.body);
 
   sendResponse(res, {
@@ -28,10 +21,7 @@ export const loginUser = catchAsync(async function (
   });
 });
 
-export const changePassword = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const changePassword = catchAsync(async function (req, res) {
   const result = await userService.changePassword(req.user, req.body, res);
 
   if (result) {

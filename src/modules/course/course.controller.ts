@@ -1,12 +1,8 @@
 import { AppError, catchAsync, sendResponse } from '@utils';
-import { Request, Response } from 'express';
 import { objectId } from './course.interface';
 import * as courseServices from './course.service';
 
-export const createCourse = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const createCourse = catchAsync(async function (req, res) {
   const id = req.user._id;
   const result = await courseServices.create(req.body, id);
 
@@ -17,10 +13,7 @@ export const createCourse = catchAsync(async function (
   });
 });
 
-export const getCourses = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const getCourses = catchAsync(async function (req, res) {
   const result = await courseServices.get(req.query);
 
   sendResponse(res, {
@@ -30,10 +23,7 @@ export const getCourses = catchAsync(async function (
   });
 });
 
-export const updateCourse = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const updateCourse = catchAsync(async function (req, res) {
   const courseId = objectId.parse(req.params.courseId),
     data = req.body;
 
@@ -48,10 +38,7 @@ export const updateCourse = catchAsync(async function (
   });
 });
 
-export const getCourseWithReviews = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const getCourseWithReviews = catchAsync(async function (req, res) {
   const courseId = objectId.parse(req.params.courseId);
 
   const result = await courseServices.getWithReviews(courseId);
@@ -63,10 +50,7 @@ export const getCourseWithReviews = catchAsync(async function (
   });
 });
 
-export const getBestCourse = catchAsync(async function (
-  req: Request,
-  res: Response
-) {
+export const getBestCourse = catchAsync(async function (req, res) {
   const result = await courseServices.getCourseWithHighestRating();
 
   sendResponse(res, {
